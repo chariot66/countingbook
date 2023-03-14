@@ -1,4 +1,4 @@
-package com.example.attemptbookkeeping;
+package com.example.attemptbookkeeping.MainPage;
 
 public class notebook {
     private String name;

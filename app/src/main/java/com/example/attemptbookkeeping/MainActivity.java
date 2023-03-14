@@ -7,21 +7,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.attemptbookkeeping.Database.DBTableHelper;
 import com.example.attemptbookkeeping.MainPage.CreateTableDialog;
 import com.example.attemptbookkeeping.MainPage.ModifyTableDialog;
-import com.example.attemptbookkeeping.MainPage.NoteAdapter;
+import com.example.attemptbookkeeping.MainPage.NoteListAdapter;
+import com.example.attemptbookkeeping.tools.DataHolder;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    RecyclerView noteRecyclerView;
-    NoteAdapter noteAdapter;
 
     // 新建表的弹窗
     CreateTableDialog createTableD;
@@ -31,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
     DBTableHelper DBtable;
 
-    ArrayList<com.example.attemptbookkeeping.notebook> notebooks_list;
+    ArrayList<com.example.attemptbookkeeping.MainPage.notebook> notebooks_list;
 
     Context mc;
 
+    static ArrayList<String> tasks = new ArrayList<>();
+    static NoteListAdapter noteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,24 +53,69 @@ public class MainActivity extends AppCompatActivity {
         DBtable = new DBTableHelper(this);
         this.notebooks_list = viewAllRecords();
 
-        // 列表显示
-        noteRecyclerView = findViewById(R.id.noteRecyclerView);
-        noteRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        noteAdapter = new NoteAdapter(this, this.notebooks_list, DBtable);
-        noteRecyclerView.setAdapter(noteAdapter);
+        noteAdapter = new NoteListAdapter(this, this.notebooks_list);
+        ListView listView = findViewById(R.id.noteListView);
+        listView.setAdapter(noteAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long
+                    id) {
+                com.example.attemptbookkeeping.MainPage.notebook currentNote = notebooks_list.get(position);
+                String click_name = currentNote.getName();
+
+                DataHolder.getInstance().setItem(click_name);
+
+                Intent intent = new Intent(mc, DetailActivity.class);
+                intent.putExtra("nName", click_name);
+                mc.startActivity(intent);
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int
+                    position, long id) {
+                com.example.attemptbookkeeping.MainPage.notebook currentNote = notebooks_list.get(position);
+                String click_name = currentNote.getName();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mc);
+                builder.setIcon(null);//设置图标, 这里设为空值
+                builder.setTitle("删除");
+                builder.setMessage("确定要删除账本:" + click_name + "吗");
+
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface arg0, int arg1){
+
+                        DBtable.deleteData(click_name);
+                        notebooks_list.clear();
+                        notebooks_list.addAll(viewAllRecords());
+//                        setNewData(viewAllRecords());
+                        noteAdapter.notifyDataSetChanged();
+                        // 还需要删除对应账本表的逻辑
+                    }
+                });
+
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface arg0,int arg1){
+                    }
+                });
+                AlertDialog b = builder.create();
+                b.show();//显示对话框
+                return true;
+            }
+
+        });
     }
 
     /**
      * 读数据库 获取所有账本名&info,主要用于的更新显示recycleview
      */
-    public ArrayList<com.example.attemptbookkeeping.notebook> viewAllRecords() {
+    public ArrayList<com.example.attemptbookkeeping.MainPage.notebook> viewAllRecords() {
         Cursor res = DBtable.getAllData();
-        ArrayList<com.example.attemptbookkeeping.notebook> models = new ArrayList<>();
+        ArrayList<com.example.attemptbookkeeping.MainPage.notebook> models = new ArrayList<>();
         if (res.getCount() == 0) {
             return models;
         }
         while (res.moveToNext()) {
-            com.example.attemptbookkeeping.notebook p = new com.example.attemptbookkeeping.notebook();
+            com.example.attemptbookkeeping.MainPage.notebook p = new com.example.attemptbookkeeping.MainPage.notebook();
             p.setName(res.getString(1));
             p.setDescription(res.getString(2));
             p.setImg(R.drawable.in_xinzi);
@@ -102,8 +154,11 @@ public class MainActivity extends AppCompatActivity {
 
 
                     // 更新notebook的显示
-                    noteAdapter.setNewData(viewAllRecords());
+                    notebooks_list.clear();
+                    notebooks_list.addAll(viewAllRecords());
+//                        setNewData(viewAllRecords());
                     noteAdapter.notifyDataSetChanged();
+
                     modifyTableD.dismiss();
                     break;
                 case R.id.btn_get_info_m:
@@ -156,8 +211,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                     // 更新notebook的显示
-                    noteAdapter.setNewData(viewAllRecords());
+
+                    notebooks_list.clear();
+                    notebooks_list.addAll(viewAllRecords());
+//                        setNewData(viewAllRecords());
                     noteAdapter.notifyDataSetChanged();
+
                     createTableD.dismiss();
                     break;
                 case R.id.btn_cancel:
