@@ -1,68 +1,205 @@
 package com.example.attemptbookkeeping.ui.user;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.attemptbookkeeping.DetailPage.logAdapter;
+import com.example.attemptbookkeeping.Database.NotebookDBhelper;
+import com.example.attemptbookkeeping.DetailPage.LogListAdapter;
 import com.example.attemptbookkeeping.DetailPage.notelog;
 import com.example.attemptbookkeeping.R;
 import com.example.attemptbookkeeping.databinding.FragmentUserBinding;
+import com.example.attemptbookkeeping.tools.DataHolder;
 
 import java.util.ArrayList;
 
 public class UserFragment extends Fragment {
 
     private FragmentUserBinding binding;
-    RecyclerView logListRecyclerView;
-    logAdapter logadapter;
+    LogListAdapter logAdapter;
+
+    ArrayList<notelog> log_list;
+
+    String[] log_type_list;
+
+    CreateLogDialog createLogD;
+
+    Context tc;
+
+    NotebookDBhelper NDB;
+
+    String notebook;
+
+    View view_temp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         UserViewModel userViewModel =
                 new ViewModelProvider(this).get(UserViewModel.class);
 
+        tc = getContext();
+
+        notebook = DataHolder.getInstance().getItem();
+
+        NDB = new NotebookDBhelper(tc);
+        NDB.setTable(notebook);
+
+        this.log_list = viewAllLogs();
+        this.log_type_list = this.getActivity().getResources().getStringArray(R.array.log_type);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
+        view_temp = view;
 
-        // Add the following lines to create RecyclerView
-        logListRecyclerView = view.findViewById(R.id.userInputList);
-        logListRecyclerView.setHasFixedSize(true);
-        logListRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        logadapter = new logAdapter(view.getContext(), getLog());
-        logListRecyclerView.setAdapter(logadapter);
+        logAdapter = new LogListAdapter(getActivity(), this.log_list);
+        ListView listView = view.findViewById(R.id.userInputList);
+        listView.setAdapter(logAdapter);
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int
+                    position, long id) {
+                notelog currentLog = log_list.get(position);
+                String date = currentLog.getTime();
+                String typeS = currentLog.getTypeS();
+                String type = currentLog.getType();
+                Double amount = currentLog.getAmount();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(tc);
+                builder.setIcon(null);//设置图标, 这里设为空值
+                builder.setTitle("删除");
+                builder.setMessage("确定要删除吗");
+
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface arg0, int arg1){
+
+                        NDB.deleteData(date,typeS,type,amount);
+                        log_list.clear();
+                        log_list.addAll(viewAllLogs());
+//                        setNewData(viewAllRecords());
+                        logAdapter.notifyDataSetChanged();
+
+                    }
+                });
+
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface arg0,int arg1){
+                    }
+                });
+                AlertDialog b = builder.create();
+                b.show();//显示对话框
+                return true;
+            }
+
+        });
+
+
+        Button add = view.findViewById(R.id.log_add);
+        add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showCLogDialog();
+            }
+        });
 
         return view;
     }
 
+    public void showCLogDialog() {
+        createLogD = new CreateLogDialog(this.getActivity(), androidx.appcompat.R.style.Base_Theme_AppCompat_Dialog,onCreateClickListener, log_type_list, view_temp);
+        createLogD.show();
+    }
+
+    private View.OnClickListener onCreateClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.log_save:
+                    String temp = createLogD.log_amount.getText().toString().trim();
+                    if(temp.length() == 0){
+                        Toast.makeText(tc,"金额不可为空", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    double amount = Double.parseDouble(temp);
+
+                    String log_type = createLogD.tSpinner.getSelectedItem().toString().trim();
+                    String log_date = createLogD.log_date.getText().toString().trim();
+
+                    String log_typeS = "income";
+
+                    if (createLogD.rg_log.getCheckedRadioButtonId() == R.id.radio_income){
+                        log_typeS = "income";
+                    }
+                    else if (createLogD.rg_log.getCheckedRadioButtonId() == R.id.radio_spend){
+                        log_typeS = "spend";
+                    }
+
+                    if(log_typeS.length() == 0){
+                        Toast.makeText(tc,"选择类型", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
 
-    // Add Models to arraylist
-    private ArrayList<notelog> getLog() {
-        final int[] amounts = getResources().getIntArray(R.array.amount);
-        final String[] types = getResources().getStringArray(R.array.type);
-        final String[] times = getResources().getStringArray(R.array.time);
-        ArrayList<notelog> models = new ArrayList<>();
-        notelog p = new notelog();
-        for (int i = 0; i < amounts.length; i++) {
-            if (i != 0) {
-                p = new notelog();
+                    boolean isInserted = NDB.insertData(amount,log_typeS ,log_type,log_date);
+                    if (!isInserted){
+                        AlertDialog.Builder builder =
+                                new AlertDialog.Builder(tc);
+                        builder.setTitle("错误");
+                        builder.setMessage("存在同名");
+                        builder.setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    { }
+                                });
+                        builder.create();
+                        builder.show();
+                        return;
+                    }
+                    // 更新notebook的显示
+
+                    log_list.clear();
+                    log_list.addAll(viewAllLogs());
+//                        setNewData(viewAllRecords());
+                    logAdapter.notifyDataSetChanged();
+
+                    createLogD.dismiss();
+                    break;
+                case R.id.log_cancel:
+                    createLogD.dismiss();
+                    break;
             }
-            p.setAmount(amounts[i]);
-            p.setType(types[i]);
-            p.setTime(times[i]);
+        }
+    };
+
+    private ArrayList<notelog> viewAllLogs() {
+        Cursor res = NDB.getAllData();
+        ArrayList<notelog> models = new ArrayList<>();
+        if (res.getCount() == 0) {
+            return models;
+        }
+        while (res.moveToNext()) {
+            notelog p = new notelog();
+            p.setTime(res.getString(1));
+            p.setTypeS(res.getString(2));
+            p.setType(res.getString(3));
+            p.setAmount(res.getDouble(4));
             models.add(p);
         }
         return models;
-    }
+    };
 
     @Override
     public void onDestroyView() {

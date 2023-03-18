@@ -19,12 +19,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.attemptbookkeeping.Database.DBTableHelper;
+import com.example.attemptbookkeeping.Database.NotebookDBhelper;
 import com.example.attemptbookkeeping.MainPage.CreateTableDialog;
 import com.example.attemptbookkeeping.MainPage.ModifyTableDialog;
 import com.example.attemptbookkeeping.MainPage.NoteListAdapter;
 import com.example.attemptbookkeeping.tools.DataHolder;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     ModifyTableDialog modifyTableD;
 
     DBTableHelper DBtable;
+
+    NotebookDBhelper logDB;
 
     ArrayList<com.example.attemptbookkeeping.MainPage.notebook> notebooks_list;
 
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mc = this;
 
         // 数据库
+        logDB = new NotebookDBhelper(mc);
         DBtable = new DBTableHelper(this);
         this.notebooks_list = viewAllRecords();
 
@@ -85,11 +91,17 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface arg0, int arg1){
 
                         DBtable.deleteData(click_name);
+                        // 还需要删除对应账本表的逻辑
+
+                        logDB.deleteTable(click_name);
+
                         notebooks_list.clear();
                         notebooks_list.addAll(viewAllRecords());
 //                        setNewData(viewAllRecords());
                         noteAdapter.notifyDataSetChanged();
-                        // 还需要删除对应账本表的逻辑
+
+
+
                     }
                 });
 
@@ -149,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     DBtable.updateData(old_table_name, new_table_name, table_info);
 
                     //还需要修改对应账本表名的逻辑
+                    logDB.renameTable(old_table_name, new_table_name);
 
 
 
@@ -189,6 +202,12 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(mc,"名不可为空", Toast.LENGTH_SHORT).show();
                         return;
                     }
+
+                    if(isStartWithNumber(table_name)){
+                        Toast.makeText(mc,"名不可为数字开头", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     String table_info = createTableD.table_info.getText().toString().trim();
                     boolean isInserted = DBtable.insertData(table_name, table_info);
                     if (!isInserted){
@@ -207,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     //还需要新建对应账本表的逻辑
-
+                    logDB.createTable(table_name);
 
 
                     // 更新notebook的显示
@@ -225,6 +244,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    public boolean isStartWithNumber(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str.charAt(0)+"");
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
 
 
     //表示当activity获取焦点时会调用的方法, 不知道为啥没有用

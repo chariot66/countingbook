@@ -1,17 +1,13 @@
 <resources>
     <string name="app_name">AttemptBookkeeping</string>
 
-    <string-array name="type">
-        <item>eat</item>
-        <item>car</item>
-    </string-array>
-    <integer-array name="amount">
-        <item>10</item>
-        <item>20</item>
-    </integer-array>
-    <string-array name="time">
-        <item>2020-1-1</item>
-        <item>2020-1-2</item>
+    <string-array name="log_type">
+        <item>Food</item>
+        <item>Transportation</item>
+        <item>Health</item>
+        <item>Social Life</item>
+        <item>Entertainment</item>
+        <item>Living</item>
     </string-array>
 
     <string name="title_activity_detail">DetailActivity</string>

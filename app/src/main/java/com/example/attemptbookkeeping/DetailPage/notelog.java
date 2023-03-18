@@ -3,10 +3,15 @@ package com.example.attemptbookkeeping.DetailPage;
 public class notelog {
     private String time;
     private String type;
-    private int amount;
+    private  String typeS;
+    private double amount;
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
+    }
+
+    public String getTypeS() {
+        return typeS;
     }
 
     public String getTime() {
@@ -17,8 +22,12 @@ public class notelog {
         return type;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public void setTypeS(String typeS) {
+        this.typeS = typeS;
     }
 
     public void setTime(String time) {

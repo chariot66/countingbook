@@ -6,57 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".ui.year.YearFragment">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center|center_horizontal"
-        android:orientation="horizontal"
-        android:textAlignment="center"
+    <Button
+        android:id="@+id/log_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showEditDialog"
+        android:text="New Notebook"
+        app:layout_constraintEnd_toStartOf="@+id/button_c"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+    <Button
+        android:id="@+id/button_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showModified"
+        android:text="Modify"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/log_add"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Left Button" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Right Button" />
-        </LinearLayout>
-
-        <!--        <Button-->
-        <!--            android:layout_width="50dp"-->
-        <!--            android:layout_height="50dp"></Button>-->
-
-        <!--        <Button-->
-        <!--            android:layout_width="50dp"-->
-        <!--            android:layout_height="50dp"></Button>-->
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
         android:id="@+id/userInputList"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/log_add"
+        android:paddingBottom="100dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
