@@ -6,37 +6,103 @@
     android:layout_height="match_parent"
     tools:context=".ui.year.YearFragment">
 
-    <Button
-        android:id="@+id/log_add"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="showEditDialog"
-        android:text="New Notebook"
-        app:layout_constraintEnd_toStartOf="@+id/button_c"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/button_c"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="showModified"
-        android:text="Modify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/log_add"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/log_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="showEditDialog"
+            android:text="New Notebook"
+            android:layout_marginLeft="5dp"/>
+
+        <Button
+            android:id="@+id/button_c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="showModified"
+            android:text="Modify"
+            android:layout_marginLeft="5dp" />
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/userInputList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="100dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_add"
-        android:paddingBottom="100dp" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"></ListView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:layout_editor_absoluteX="0dp">
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="DAY" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="MONTH" />
+
+        <Spinner
+            android:id="@+id/spinner3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="YEAR" />
+        <Button
+            android:id="@+id/searchbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="Search"
+            android:text="Search"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        tools:layout_editor_absoluteX="0dp">
+
+        <Spinner
+            android:id="@+id/spinner4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="TYPE" />
+
+        <Spinner
+            android:id="@+id/spinner5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="INCOME/OUTCOME" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

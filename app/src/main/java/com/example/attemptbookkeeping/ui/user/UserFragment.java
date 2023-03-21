@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,15 +46,19 @@ public class UserFragment extends Fragment {
     String notebook;
 
     View view_temp;
+    String[] days,months,years,type,inoutcome;//Spinner数据
+    String sel_day,sel_month,sel_year,sel_type,sel_inoutcome;//用来存储Spinner结果
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        UserViewModel userViewModel =
-                new ViewModelProvider(this).get(UserViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         tc = getContext();
 
         notebook = DataHolder.getInstance().getItem();
+
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        view_temp = view;
+
 
         NDB = new NotebookDBhelper(tc);
         NDB.setTable(notebook);
@@ -61,8 +67,85 @@ public class UserFragment extends Fragment {
         this.log_type_list = this.getActivity().getResources().getStringArray(R.array.log_type);
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
-        view_temp = view;
+
+        //定义五个Spinner
+        days = getResources().getStringArray(R.array.days_array);//从string获取列表内容
+        Spinner daySpinner = (Spinner) view.findViewById(R.id.spinner1);//定义spinner
+        ArrayAdapter<String> dayadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, days);//设置adapter
+        daySpinner.setAdapter(dayadapter);//下同
+        months = getResources().getStringArray(R.array.months_array);
+        Spinner monthSpinner = (Spinner) view.findViewById(R.id.spinner2);
+        ArrayAdapter<String> monthadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, months);
+        monthSpinner.setAdapter(monthadapter);
+        years = getResources().getStringArray(R.array.years_array);
+        Spinner yearSpinner = (Spinner) view.findViewById(R.id.spinner3);
+        ArrayAdapter<String> yearadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, years);
+        yearSpinner.setAdapter(yearadapter);
+        type = getResources().getStringArray(R.array.type_array);
+        Spinner typeSpinner = (Spinner) view.findViewById(R.id.spinner4);
+        ArrayAdapter<String> typeadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, type);
+        typeSpinner.setAdapter(typeadapter);
+        inoutcome = getResources().getStringArray(R.array.inoutcome);
+        Spinner inoutcomeSpinner = (Spinner) view.findViewById(R.id.spinner5);
+        ArrayAdapter<String> inoutcomeadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, inoutcome);
+        inoutcomeSpinner.setAdapter(inoutcomeadapter);
+        daySpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        int index = arg0.getSelectedItemPosition();
+                        sel_day = days[index];
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+                });
+        monthSpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        int index = arg0.getSelectedItemPosition();
+                        sel_month = months[index];
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+                });
+        yearSpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        int index = arg0.getSelectedItemPosition();
+                        sel_year = years[index];
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+                });
+
+        typeSpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        int index = arg0.getSelectedItemPosition();
+                        sel_type = type[index];
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+                });
+        inoutcomeSpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        int index = arg0.getSelectedItemPosition();
+                        sel_inoutcome = inoutcome[index];
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+                });
+        //定义五个Spinner
 
         logAdapter = new LogListAdapter(getActivity(), this.log_list);
         ListView listView = view.findViewById(R.id.userInputList);
@@ -83,10 +166,10 @@ public class UserFragment extends Fragment {
                 builder.setTitle("删除");
                 builder.setMessage("确定要删除吗");
 
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface arg0, int arg1){
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
 
-                        NDB.deleteData(date,typeS,type,amount);
+                        NDB.deleteData(date, typeS, type, amount);
                         log_list.clear();
                         log_list.addAll(viewAllLogs());
 //                        setNewData(viewAllRecords());
@@ -95,8 +178,8 @@ public class UserFragment extends Fragment {
                     }
                 });
 
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface arg0,int arg1){
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
                     }
                 });
                 AlertDialog b = builder.create();
@@ -111,6 +194,12 @@ public class UserFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showCLogDialog();
+            }
+        });
+        Button search = view.findViewById(R.id.searchbtn);
+        search.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Search();
             }
         });
 
@@ -200,6 +289,42 @@ public class UserFragment extends Fragment {
         }
         return models;
     };
+
+    //按日期、类别、收支查找
+    public ArrayList<notelog> Search() {
+        Cursor res = NDB.getAllData();
+        ArrayList<notelog> models = new ArrayList<>();
+        if (res.getCount() == 0) {
+            Toast.makeText(tc,"NO RECORD", Toast.LENGTH_SHORT).show();//空列表
+            return models;
+        }
+        while (res.moveToNext()) {
+            notelog p = new notelog();
+            String day = res.getString(1).substring(0,2);//截取Date前两位，和spinner选中的结果比较，下同
+            String month = res.getString(1).substring(2,4);
+            String year = res.getString(1).substring(4,8);
+            String types = res.getString(2);
+            String type = res.getString(3);
+            //if比较spinner的结果和内容
+            if((sel_year.equals(year)||sel_year.equals("ALL"))&&(sel_month.equals(month)||sel_month.equals("ALL"))&&(sel_day.equals(day)||sel_day.equals("ALL"))) {
+                if(sel_type.equals(type)||sel_type.equals("ALL")){
+                    if(sel_inoutcome.equals(types)||sel_inoutcome.equals("ALL")){
+                        p.setTime(res.getString(1));
+                        p.setTypeS(res.getString(2));
+                        p.setType(res.getString(3));
+                        p.setAmount(res.getDouble(4));
+                        models.add(p);
+                    }
+                }
+            }
+        }
+        log_list.clear();
+        log_list.addAll(models);
+//                        setNewData(viewAllRecords());
+        logAdapter.notifyDataSetChanged();//显示数据
+        return models;
+    }
+    //按日期、类别、收支查找
 
     @Override
     public void onDestroyView() {
