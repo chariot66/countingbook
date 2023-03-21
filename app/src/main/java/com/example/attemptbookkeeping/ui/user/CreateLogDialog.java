@@ -38,7 +38,7 @@ public class CreateLogDialog extends Dialog {
 
     public EditText log_amount, log_date;
 
-    Spinner tSpinner;
+    public Spinner tSpinner;
 
     public View view_t;
 
@@ -55,6 +55,13 @@ public class CreateLogDialog extends Dialog {
         this.mClickListener = clickListener;
         this.type_list = list;
         this.view_t = v;
+    }
+
+    public CreateLogDialog(Activity context, int theme, View.OnClickListener clickListener, String[] list) {
+        super(context, theme);
+        this.context = context;
+        this.mClickListener = clickListener;
+        this.type_list = list;
     }
 
     @Override

@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
                 DataHolder.getInstance().setItem(click_name);
 
-                Intent intent = new Intent(mc, DetailActivity.class);
+                Intent intent = new Intent(mc, DetailNewActivity.class);
                 intent.putExtra("nName", click_name);
-                mc.startActivity(intent);
+                startActivity(intent);
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
