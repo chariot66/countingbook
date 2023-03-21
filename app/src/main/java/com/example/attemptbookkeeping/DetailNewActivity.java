@@ -273,7 +273,7 @@ public class DetailNewActivity extends AppCompatActivity {
     };
 
     //按日期、类别、收支查找
-    public ArrayList<notelog> Search() {
+    public ArrayList<notelog> Search(View view) {
         Cursor res = NDB.getAllData();
         ArrayList<notelog> models = new ArrayList<>();
         if (res.getCount() == 0) {
