@@ -12,11 +12,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/log_add"
+            android:id="@+id/Record_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="showEditDialog"
-            android:text="New Notebook"
+            android:onClick="showCLogDialog"
+            android:text="New Record"
             android:layout_marginLeft="5dp"/>
 
         <Button

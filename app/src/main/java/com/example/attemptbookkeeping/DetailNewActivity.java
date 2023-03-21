@@ -1,13 +1,14 @@
-package com.example.attemptbookkeeping.ui.user;
+package com.example.attemptbookkeeping;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,20 +16,17 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.example.attemptbookkeeping.Database.NotebookDBhelper;
 import com.example.attemptbookkeeping.DetailPage.LogListAdapter;
 import com.example.attemptbookkeeping.DetailPage.notelog;
-import com.example.attemptbookkeeping.R;
 import com.example.attemptbookkeeping.databinding.FragmentUserBinding;
 import com.example.attemptbookkeeping.tools.DataHolder;
+import com.example.attemptbookkeeping.ui.user.CreateLogDialog;
+import com.example.attemptbookkeeping.ui.user.UserViewModel;
 
 import java.util.ArrayList;
 
-public class UserFragment extends Fragment {
+public class DetailNewActivity extends AppCompatActivity {
 
     private FragmentUserBinding binding;
     LogListAdapter logAdapter;
@@ -45,49 +43,49 @@ public class UserFragment extends Fragment {
 
     String notebook;
 
-    View view_temp;
     String[] days,months,years,type,inoutcome;//Spinner数据
     String sel_day,sel_month,sel_year,sel_type,sel_inoutcome;//用来存储Spinner结果
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_detail_new);
+
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        tc = getContext();
+        tc = this;
 
         notebook = DataHolder.getInstance().getItem();
-
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
-        view_temp = view;
 
 
         NDB = new NotebookDBhelper(tc);
         NDB.setTable(notebook);
 
         this.log_list = viewAllLogs();
-        this.log_type_list = this.getActivity().getResources().getStringArray(R.array.log_type);
+        this.log_type_list = this.getResources().getStringArray(R.array.log_type);
 
         // Inflate the layout for this fragment
 
         //定义五个Spinner
         days = getResources().getStringArray(R.array.days_array);//从string获取列表内容
-        Spinner daySpinner = (Spinner) view.findViewById(R.id.spinner1);//定义spinner
-        ArrayAdapter<String> dayadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, days);//设置adapter
+        Spinner daySpinner = (Spinner)findViewById(R.id.spinner1);//定义spinner
+        ArrayAdapter<String> dayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, days);//设置adapter
         daySpinner.setAdapter(dayadapter);//下同
         months = getResources().getStringArray(R.array.months_array);
-        Spinner monthSpinner = (Spinner) view.findViewById(R.id.spinner2);
-        ArrayAdapter<String> monthadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, months);
+        Spinner monthSpinner = (Spinner)findViewById(R.id.spinner2);
+        ArrayAdapter<String> monthadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, months);
         monthSpinner.setAdapter(monthadapter);
         years = getResources().getStringArray(R.array.years_array);
-        Spinner yearSpinner = (Spinner) view.findViewById(R.id.spinner3);
-        ArrayAdapter<String> yearadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, years);
+        Spinner yearSpinner = (Spinner)findViewById(R.id.spinner3);
+        ArrayAdapter<String> yearadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         yearSpinner.setAdapter(yearadapter);
         type = getResources().getStringArray(R.array.type_array);
-        Spinner typeSpinner = (Spinner) view.findViewById(R.id.spinner4);
-        ArrayAdapter<String> typeadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, type);
+        Spinner typeSpinner = (Spinner)findViewById(R.id.spinner4);
+        ArrayAdapter<String> typeadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, type);
         typeSpinner.setAdapter(typeadapter);
         inoutcome = getResources().getStringArray(R.array.inoutcome);
-        Spinner inoutcomeSpinner = (Spinner) view.findViewById(R.id.spinner5);
-        ArrayAdapter<String> inoutcomeadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, inoutcome);
+        Spinner inoutcomeSpinner = (Spinner)findViewById(R.id.spinner5);
+        ArrayAdapter<String> inoutcomeadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, inoutcome);
         inoutcomeSpinner.setAdapter(inoutcomeadapter);
         daySpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -147,8 +145,8 @@ public class UserFragment extends Fragment {
                 });
         //定义五个Spinner
 
-        logAdapter = new LogListAdapter(getActivity(), this.log_list);
-        ListView listView = view.findViewById(R.id.userInputList);
+        logAdapter = new LogListAdapter(this, this.log_list);
+        ListView listView = findViewById(R.id.userInputList);
         listView.setAdapter(logAdapter);
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -188,26 +186,10 @@ public class UserFragment extends Fragment {
             }
 
         });
-
-
-        Button add = view.findViewById(R.id.log_add);
-        add.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                showCLogDialog();
-            }
-        });
-        Button search = view.findViewById(R.id.searchbtn);
-        search.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Search();
-            }
-        });
-
-        return view;
     }
 
-    public void showCLogDialog() {
-        createLogD = new CreateLogDialog(this.getActivity(), androidx.appcompat.R.style.Base_Theme_AppCompat_Dialog,onCreateClickListener, log_type_list, view_temp);
+    public void showCLogDialog(View view) {
+        createLogD = new CreateLogDialog(this, androidx.appcompat.R.style.Base_Theme_AppCompat_Dialog,onCreateClickListener, log_type_list);
         createLogD.show();
     }
 
@@ -291,7 +273,7 @@ public class UserFragment extends Fragment {
     };
 
     //按日期、类别、收支查找
-    public ArrayList<notelog> Search() {
+    public ArrayList<notelog> Search(View view) {
         Cursor res = NDB.getAllData();
         ArrayList<notelog> models = new ArrayList<>();
         if (res.getCount() == 0) {
@@ -327,8 +309,8 @@ public class UserFragment extends Fragment {
     //按日期、类别、收支查找
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         binding = null;
     }
 }

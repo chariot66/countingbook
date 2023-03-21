@@ -71,3 +71,4 @@ public class CreateTableDialog extends Dialog {
         this.setCancelable(true);
     }
 }
+
