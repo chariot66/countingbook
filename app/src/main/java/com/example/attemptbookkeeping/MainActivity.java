@@ -157,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(mc,"名不可为空", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    if(isStartWithNumber(new_table_name)){
+                        Toast.makeText(mc,"名不可为数字开头", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     String table_info = modifyTableD.table_info.getText().toString().trim();
                     DBtable.updateData(old_table_name, new_table_name, table_info);
 

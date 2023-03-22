@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.attemptbookkeeping.Database.NotebookDBhelper;
 import com.example.attemptbookkeeping.DetailPage.LogListAdapter;
 import com.example.attemptbookkeeping.DetailPage.notelog;
+import com.example.attemptbookkeeping.MainPage.notebook;
 import com.example.attemptbookkeeping.R;
 import com.example.attemptbookkeeping.databinding.FragmentUserBinding;
 import com.example.attemptbookkeeping.tools.DataHolder;

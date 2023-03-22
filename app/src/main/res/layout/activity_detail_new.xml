@@ -17,15 +17,9 @@
             android:layout_height="wrap_content"
             android:onClick="showCLogDialog"
             android:text="New Record"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginLeft="140dp"/>
 
-        <Button
-            android:id="@+id/button_c"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="showModified"
-            android:text="Modify"
-            android:layout_marginLeft="5dp" />
+
     </LinearLayout>
 
 
