@@ -27,8 +27,6 @@ import com.example.attemptbookkeeping.ui.user.UserViewModel;
 import java.util.ArrayList;
 
 public class DetailNewActivity extends AppCompatActivity {
-
-    private FragmentUserBinding binding;
     LogListAdapter logAdapter;
 
     ArrayList<notelog> log_list;
@@ -207,6 +205,25 @@ public class DetailNewActivity extends AppCompatActivity {
 
                     String log_type = createLogD.tSpinner.getSelectedItem().toString().trim();
                     String log_date = createLogD.log_date.getText().toString().trim();
+                    double log_day = Double.parseDouble(log_date.substring(0,2));//截取Date前两位
+                    double log_month = Double.parseDouble(log_date.substring(2,4));
+                    double log_year = Double.parseDouble(log_date.substring(4,8));
+                    if(log_date.length() != 8){
+                        Toast.makeText(tc,"Please re-input the date in DDMMYYYY", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(log_day>31||log_month>12||log_year>2023||log_year<2021){
+                        Toast.makeText(tc,"Invaliad date", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(log_day>30&&(log_month==4||log_month==6||log_month==9||log_month==11)){
+                        Toast.makeText(tc,"Invaliad date", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(log_day>28&&log_month==2){
+                        Toast.makeText(tc,"Invaliad date", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     String log_typeS = "income";
 
@@ -311,6 +328,5 @@ public class DetailNewActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        binding = null;
     }
 }
