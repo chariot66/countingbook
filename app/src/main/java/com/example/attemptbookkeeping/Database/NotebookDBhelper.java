@@ -54,10 +54,7 @@ public class NotebookDBhelper extends SQLiteOpenHelper {
         contentValues.put(COL_3,t);
         contentValues.put(COL_4,amount);
         long result = db.insert(TABLE_NAME, null, contentValues);
-        if (result == -1)
-            return false;
-        else
-            return true;
+        return result != -1;
     }
     // Method to show all the records
     public Cursor getAllData() {

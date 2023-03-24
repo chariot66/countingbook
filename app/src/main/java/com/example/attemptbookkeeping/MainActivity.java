@@ -1,22 +1,17 @@
 package com.example.attemptbookkeeping;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.attemptbookkeeping.Database.DBTableHelper;
 import com.example.attemptbookkeeping.Database.NotebookDBhelper;
@@ -30,24 +25,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-
-    // 新建表的弹窗
-    CreateTableDialog createTableD;
-
-    // 修改表的弹窗
-    ModifyTableDialog modifyTableD;
-
+    CreateTableDialog createTableD;// 新建表的弹窗
+    ModifyTableDialog modifyTableD;// 修改表的弹窗
     DBTableHelper DBtable;
-
     NotebookDBhelper logDB;
-
     ArrayList<com.example.attemptbookkeeping.MainPage.notebook> notebooks_list;
-
     Context mc;
-
     static ArrayList<String> tasks = new ArrayList<>();
     static NoteListAdapter noteAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
                 String click_name = currentNote.getName();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mc);
                 builder.setIcon(null);//设置图标, 这里设为空值
-                builder.setTitle("删除");
-                builder.setMessage("确定要删除账本:" + click_name + "吗");
+                builder.setTitle(R.string.title_delete);
+                builder.setMessage(getString(R.string.check_delete) + click_name );
 
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface arg0, int arg1){
 
                         DBtable.deleteData(click_name);
@@ -105,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener(){
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface arg0,int arg1){
                     }
                 });
@@ -146,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         modifyTableD.show();
     }
 
-    private View.OnClickListener onModifyClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onModifyClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -154,11 +139,11 @@ public class MainActivity extends AppCompatActivity {
                     String old_table_name = modifyTableD.old_table_name.getText().toString().trim();
                     String new_table_name = modifyTableD.new_table_name.getText().toString().trim();
                     if(old_table_name.length() == 0 || new_table_name.length() == 0){
-                        Toast.makeText(mc,"名不可为空", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mc, R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if(isStartWithNumber(new_table_name)){
-                        Toast.makeText(mc,"名不可为数字开头", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mc, R.string.alert_name_number, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     String table_info = modifyTableD.table_info.getText().toString().trim();
@@ -196,19 +181,19 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    private View.OnClickListener onCreateClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onCreateClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_save:
                     String table_name = createTableD.table_name.getText().toString().trim();
                     if(table_name.length() == 0){
-                        Toast.makeText(mc,"名不可为空", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mc,R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     if(isStartWithNumber(table_name)){
-                        Toast.makeText(mc,"名不可为数字开头", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mc,R.string.alert_name_number, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -217,9 +202,9 @@ public class MainActivity extends AppCompatActivity {
                     if (!isInserted){
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("错误");
-                        builder.setMessage("存在同名");
-                        builder.setPositiveButton("OK",
+                        builder.setTitle(R.string.title_error);
+                        builder.setMessage(R.string.alert_name_same);
+                        builder.setPositiveButton(R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which)
@@ -252,10 +237,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean isStartWithNumber(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str.charAt(0)+"");
-        if (!isNum.matches()) {
-            return false;
-        }
-        return true;
+        return isNum.matches();
     }
 
 

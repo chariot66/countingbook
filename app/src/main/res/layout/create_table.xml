@@ -8,7 +8,7 @@
         android:id="@+id/table_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="名称"
+        android:hint="@string/name"
         android:minHeight="45dp"
         android:textColor="@color/black"
         android:textColorHint="@color/teal_200"
@@ -21,7 +21,7 @@
         android:layout_marginTop="5dp"
         android:backgroundTint="@color/grey"
         android:gravity="top|left"
-        android:hint="描述"
+        android:hint="@string/discript"
         android:minHeight="145dp"
         android:textAllCaps="false"
         android:textColor="@color/black"
@@ -35,13 +35,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
         android:onClick="showEditDialog"
-        android:text="保存" />
+        android:text="@string/save" />
 
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="取消" />
+        android:text="@string/cancel" />
 
 </LinearLayout >

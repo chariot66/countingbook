@@ -8,7 +8,7 @@
         android:id="@+id/log_amount"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="金额"
+        android:hint="@string/amount"
         android:inputType="number"
         android:minHeight="45dp"
         android:textColor="@color/black"
@@ -26,14 +26,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="income"
+            android:text="@string/income"
             android:textColor="@color/black" />
 
         <RadioButton
             android:id="@+id/radio_spend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="spend"
+            android:text="@string/spend"
             android:textColor="@color/black" />
     </RadioGroup>
 
@@ -66,7 +66,7 @@
         android:layout_marginTop="5dp"
         android:backgroundTint="@color/grey"
         android:gravity="top|left"
-        android:hint="DD-MM-YYYY"
+        android:hint="@string/date_format"
         android:inputType="date"
         android:minHeight="145dp"
         android:textAllCaps="false"
@@ -81,13 +81,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
         android:onClick="showEditDialog"
-        android:text="保存" />
+        android:text="@string/save" />
 
     <Button
         android:id="@+id/log_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="取消" />
+        android:text="@string/cancel" />
 
 </LinearLayout >

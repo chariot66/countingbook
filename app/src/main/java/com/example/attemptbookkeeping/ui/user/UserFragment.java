@@ -212,7 +212,7 @@ public class UserFragment extends Fragment {
         createLogD.show();
     }
 
-    private View.OnClickListener onCreateClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onCreateClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -289,7 +289,7 @@ public class UserFragment extends Fragment {
             models.add(p);
         }
         return models;
-    };
+    }
 
     //按日期、类别、收支查找
     public ArrayList<notelog> Search() {

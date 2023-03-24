@@ -1,25 +1,24 @@
 package com.example.attemptbookkeeping;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.attemptbookkeeping.Database.NotebookDBhelper;
 import com.example.attemptbookkeeping.DetailPage.LogListAdapter;
 import com.example.attemptbookkeeping.DetailPage.notelog;
-import com.example.attemptbookkeeping.databinding.FragmentUserBinding;
 import com.example.attemptbookkeeping.tools.DataHolder;
 import com.example.attemptbookkeeping.ui.user.CreateLogDialog;
 import com.example.attemptbookkeeping.ui.user.UserViewModel;
@@ -44,6 +43,8 @@ public class DetailNewActivity extends AppCompatActivity {
     String[] days,months,years,type,inoutcome;//Spinner数据
     String sel_day,sel_month,sel_year,sel_type,sel_inoutcome;//用来存储Spinner结果
 
+    float food=0,Transport=0,Health=0,SocialLife=0,Entertainment=0,Living=0,sum=0,inout=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,23 +68,23 @@ public class DetailNewActivity extends AppCompatActivity {
         //定义五个Spinner
         days = getResources().getStringArray(R.array.days_array);//从string获取列表内容
         Spinner daySpinner = (Spinner)findViewById(R.id.spinner1);//定义spinner
-        ArrayAdapter<String> dayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, days);//设置adapter
+        ArrayAdapter<String> dayadapter = new ArrayAdapter<String>(this, R.layout.dropdown_item, days);//设置adapter
         daySpinner.setAdapter(dayadapter);//下同
         months = getResources().getStringArray(R.array.months_array);
         Spinner monthSpinner = (Spinner)findViewById(R.id.spinner2);
-        ArrayAdapter<String> monthadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, months);
+        ArrayAdapter<String> monthadapter = new ArrayAdapter<String>(this, R.layout.dropdown_item, months);
         monthSpinner.setAdapter(monthadapter);
         years = getResources().getStringArray(R.array.years_array);
         Spinner yearSpinner = (Spinner)findViewById(R.id.spinner3);
-        ArrayAdapter<String> yearadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<String> yearadapter = new ArrayAdapter<String>(this, R.layout.dropdown_item, years);
         yearSpinner.setAdapter(yearadapter);
         type = getResources().getStringArray(R.array.type_array);
         Spinner typeSpinner = (Spinner)findViewById(R.id.spinner4);
-        ArrayAdapter<String> typeadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, type);
+        ArrayAdapter<String> typeadapter = new ArrayAdapter<String>(this, R.layout.dropdown_item, type);
         typeSpinner.setAdapter(typeadapter);
         inoutcome = getResources().getStringArray(R.array.inoutcome);
         Spinner inoutcomeSpinner = (Spinner)findViewById(R.id.spinner5);
-        ArrayAdapter<String> inoutcomeadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, inoutcome);
+        ArrayAdapter<String> inoutcomeadapter = new ArrayAdapter<String>(this, R.layout.dropdown_item, inoutcome);
         inoutcomeSpinner.setAdapter(inoutcomeadapter);
         daySpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -159,10 +160,10 @@ public class DetailNewActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(tc);
                 builder.setIcon(null);//设置图标, 这里设为空值
-                builder.setTitle("删除");
-                builder.setMessage("确定要删除吗");
+                builder.setTitle(R.string.title_delete);
+                builder.setMessage(R.string.check_delete);
 
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
 
                         NDB.deleteData(date, typeS, type, amount);
@@ -174,7 +175,7 @@ public class DetailNewActivity extends AppCompatActivity {
                     }
                 });
 
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
                     }
                 });
@@ -191,14 +192,14 @@ public class DetailNewActivity extends AppCompatActivity {
         createLogD.show();
     }
 
-    private View.OnClickListener onCreateClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onCreateClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.log_save:
                     String temp = createLogD.log_amount.getText().toString().trim();
                     if(temp.length() == 0){
-                        Toast.makeText(tc,"金额不可为空", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(tc, R.string.alert_amount_empty, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     double amount = Double.parseDouble(temp);
@@ -209,33 +210,33 @@ public class DetailNewActivity extends AppCompatActivity {
                     double log_month = Double.parseDouble(log_date.substring(2,4));
                     double log_year = Double.parseDouble(log_date.substring(4,8));
                     if(log_date.length() != 8){
-                        Toast.makeText(tc,"Please re-input the date in DDMMYYYY", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(tc, R.string.alert_date_format, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if(log_day>31||log_month>12||log_year>2023||log_year<2021){
-                        Toast.makeText(tc,"Invaliad date", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(tc, R.string.alert_date_invalid, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if(log_day>30&&(log_month==4||log_month==6||log_month==9||log_month==11)){
-                        Toast.makeText(tc,"Invaliad date", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(tc,R.string.alert_date_invalid, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if(log_day>28&&log_month==2){
-                        Toast.makeText(tc,"Invaliad date", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(tc,R.string.alert_date_invalid, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    String log_typeS = "income";
+                    String log_typeS = "";
 
                     if (createLogD.rg_log.getCheckedRadioButtonId() == R.id.radio_income){
-                        log_typeS = "income";
+                        log_typeS = getString(R.string.income);
                     }
                     else if (createLogD.rg_log.getCheckedRadioButtonId() == R.id.radio_spend){
-                        log_typeS = "spend";
+                        log_typeS = getString(R.string.spend);
                     }
 
                     if(log_typeS.length() == 0){
-                        Toast.makeText(tc,"选择类型", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(tc,R.string.alert_select_type, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -244,9 +245,9 @@ public class DetailNewActivity extends AppCompatActivity {
                     if (!isInserted){
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(tc);
-                        builder.setTitle("错误");
-                        builder.setMessage("存在同名");
-                        builder.setPositiveButton("OK",
+                        builder.setTitle(R.string.title_error);
+                        builder.setMessage(R.string.alert_name_same);
+                        builder.setPositiveButton(R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which)
@@ -271,10 +272,11 @@ public class DetailNewActivity extends AppCompatActivity {
             }
         }
     };
+    ArrayList<notelog> models = new ArrayList<>();
 
     private ArrayList<notelog> viewAllLogs() {
         Cursor res = NDB.getAllData();
-        ArrayList<notelog> models = new ArrayList<>();
+        models = new ArrayList<>();
         if (res.getCount() == 0) {
             return models;
         }
@@ -287,14 +289,15 @@ public class DetailNewActivity extends AppCompatActivity {
             models.add(p);
         }
         return models;
-    };
+    }
 
     //按日期、类别、收支查找
     public ArrayList<notelog> Search(View view) {
+        food=0;Transport=0;Health=0;SocialLife=0;Entertainment=0;Living=0;sum=0;inout=0;
         Cursor res = NDB.getAllData();
-        ArrayList<notelog> models = new ArrayList<>();
+        models = new ArrayList<>();
         if (res.getCount() == 0) {
-            Toast.makeText(tc,"NO RECORD", Toast.LENGTH_SHORT).show();//空列表
+            Toast.makeText(tc, R.string.alert_no_record, Toast.LENGTH_SHORT).show();//空列表
             return models;
         }
         while (res.moveToNext()) {
@@ -302,12 +305,12 @@ public class DetailNewActivity extends AppCompatActivity {
             String day = res.getString(1).substring(0,2);//截取Date前两位，和spinner选中的结果比较，下同
             String month = res.getString(1).substring(2,4);
             String year = res.getString(1).substring(4,8);
-            String types = res.getString(2);
+            String types = res.getString(2);//in out
             String type = res.getString(3);
             //if比较spinner的结果和内容
-            if((sel_year.equals(year)||sel_year.equals("ALL"))&&(sel_month.equals(month)||sel_month.equals("ALL"))&&(sel_day.equals(day)||sel_day.equals("ALL"))) {
-                if(sel_type.equals(type)||sel_type.equals("ALL")){
-                    if(sel_inoutcome.equals(types)||sel_inoutcome.equals("ALL")){
+            if((sel_year.equals(year)||sel_year.equals(getString(R.string.all)))&&(sel_month.equals(month)||sel_month.equals(getString(R.string.all)))&&(sel_day.equals(day)||sel_day.equals(getString(R.string.all)))) {
+                if(sel_type.equals(type)||sel_type.equals(getString(R.string.all))){
+                    if(sel_inoutcome.equals(types)||sel_inoutcome.equals(getString(R.string.all))){
                         p.setTime(res.getString(1));
                         p.setTypeS(res.getString(2));
                         p.setType(res.getString(3));
@@ -316,6 +319,45 @@ public class DetailNewActivity extends AppCompatActivity {
                     }
                 }
             }
+            if((sel_year.equals(year)||sel_year.equals(getString(R.string.all)))&&(sel_month.equals(month)||sel_month.equals(getString(R.string.all)))&&(sel_day.equals(day)||sel_day.equals(getString(R.string.all)))) {
+                if(types.equals(getString(R.string.income))&&sel_inoutcome.equals(getString(R.string.income))){
+                    inout=1;
+                    if(type.equals(getString(R.string.food))){
+                        food = (float) (food + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Transport))) {
+                        Transport = (float) (Transport + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Health))) {
+                        Health = (float) (Health + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.SocialLife))) {
+                        SocialLife = (float) (SocialLife + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Entertainment))) {
+                        Entertainment = (float) (Entertainment + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Living))) {
+                        Living = (float) (Living + res.getDouble(4));
+                    }
+                    sum = (float) (sum + res.getDouble(4));
+                }else if(types.equals(getString(R.string.spend))&&sel_inoutcome.equals(getString(R.string.spend))){
+                    inout=2;
+                    if(type.equals(getString(R.string.food))){
+                        food = (float) (food + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Transport))) {
+                        Transport = (float) (Transport + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Health))) {
+                        Health = (float) (Health + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.SocialLife))) {
+                        SocialLife = (float) (SocialLife + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Entertainment))) {
+                        Entertainment = (float) (Entertainment + res.getDouble(4));
+                    }else if (type.equals(getString(R.string.Living))) {
+                        Living = (float) (Living + res.getDouble(4));
+                    }
+                    sum = (float) (sum + res.getDouble(4));
+                }else if(sel_inoutcome.equals(getString(R.string.all))) {
+                    inout=0;
+                }
+
+            }
+
         }
         log_list.clear();
         log_list.addAll(models);
@@ -324,6 +366,26 @@ public class DetailNewActivity extends AppCompatActivity {
         return models;
     }
     //按日期、类别、收支查找
+
+    public void Pie(View view){
+        if(inout==0){
+            Toast.makeText(tc, R.string.alert_select_type, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(tc, PieChart.class);
+        Bundle bundle = new Bundle();
+        bundle.putFloat("inout", inout);
+        bundle.putFloat("food", food);
+        bundle.putFloat("Transport", Transport);
+        bundle.putFloat("Health", Health);
+        bundle.putFloat("SocialLife",SocialLife);
+        bundle.putFloat("Entertainment", Entertainment);
+        bundle.putFloat("Living", Living);
+        bundle.putFloat("sum", sum);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 
     @Override
     public void onDestroy() {
