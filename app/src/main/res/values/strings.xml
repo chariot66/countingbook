@@ -80,8 +80,43 @@
     </string-array>
 
     <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_day">Day</string>
-    <string name="title_month">Month</string>
-    <string name="title_year">Year</string>
-    <string name="title_user">User</string>
+    <string name="title_delete">DELETE</string>
+    <string name="check_delete">Are you sure to delete :</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="alert_empty_name">Name cannot be empty</string>
+    <string name="alert_name_number">Name cannot start with number</string>
+    <string name="title_error">ERROR</string>
+    <string name="alert_name_same">It already exists</string>
+    <string name="alert_amount_empty">Amount cannot be empty</string>
+    <string name="alert_date_format">Please re-input the date in DDMMYYYY</string>
+    <string name="alert_date_invalid">Invaliad date</string>
+    <string name="alert_no_record">NO RECORD</string>
+    <string name="alert_select_type">Please select in/outcome</string>
+    <string name="income">income</string>
+    <string name="spend">spend</string>
+    <string name="title_income">INCOME</string>
+    <string name="title_spend">SPEND</string>
+    <string name="total">TOTAL:</string>
+    <string name="food">Food</string>
+    <string name="Transport">Transportation</string>
+    <string name="Health">Health</string>
+    <string name="SocialLife">Social Life</string>
+    <string name="Entertainment">Entertainment</string>
+    <string name="Living">Living</string>
+    <string name="all">ALL</string>
+    <string name="new_notebook">New Notebook</string>
+    <string name="modify">Modify</string>
+    <string name="new_record">New Record</string>
+    <string name="statistics">Statistics</string>
+    <string name="amount">Amount</string>
+    <string name="date_format">DDMMYYYY</string>
+    <string name="save">SAVE</string>
+    <string name="name">NAME</string>
+    <string name="discript">Discript</string>
+    <string name="ori_name">Origin Name</string>
+    <string name="new_name">New Name</string>
+    <string name="getDiscript">Get Discription</string>
+    <string name="search">Search</string>
+
 </resources>
