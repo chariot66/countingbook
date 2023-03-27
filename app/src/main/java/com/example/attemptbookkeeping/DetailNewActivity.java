@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,10 +21,13 @@ import com.example.attemptbookkeeping.Database.NotebookDBhelper;
 import com.example.attemptbookkeeping.DetailPage.LogListAdapter;
 import com.example.attemptbookkeeping.DetailPage.notelog;
 import com.example.attemptbookkeeping.tools.DataHolder;
+import com.example.attemptbookkeeping.tools.TranslateTool;
 import com.example.attemptbookkeeping.ui.user.CreateLogDialog;
 import com.example.attemptbookkeeping.ui.user.UserViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class DetailNewActivity extends AppCompatActivity {
     LogListAdapter logAdapter;
@@ -45,6 +49,11 @@ public class DetailNewActivity extends AppCompatActivity {
 
     float food=0,Transport=0,Health=0,SocialLife=0,Entertainment=0,Living=0,sum=0,inout=0;
 
+    TranslateTool tl;
+    HashMap HME2C, HMC2E;
+
+    String language;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +71,21 @@ public class DetailNewActivity extends AppCompatActivity {
 
         this.log_list = viewAllLogs();
         this.log_type_list = this.getResources().getStringArray(R.array.log_type);
+
+        //翻译键值对
+        tl= new TranslateTool();
+        HME2C = tl.getHMEng2Ch();
+        HMC2E = tl.getHMCh2Eng();
+
+        // 获取语言
+        Locale locale = getResources().getConfiguration().locale;
+//            //找到的另一个版本 备用
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                locale = getResources().getConfiguration().getLocales().get(0);
+//            } else {
+//                locale = getResources().getConfiguration().locale;
+//            }
+        language = locale.getLanguage()+"-"+locale.getCountry();;
 
         // Inflate the layout for this fragment
 
@@ -144,7 +168,7 @@ public class DetailNewActivity extends AppCompatActivity {
                 });
         //定义五个Spinner
 
-        logAdapter = new LogListAdapter(this, this.log_list);
+        logAdapter = new LogListAdapter(this, this.log_list, language);
         ListView listView = findViewById(R.id.userInputList);
         listView.setAdapter(logAdapter);
 
@@ -152,11 +176,7 @@ public class DetailNewActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int
                     position, long id) {
-                notelog currentLog = log_list.get(position);
-                String date = currentLog.getTime();
-                String typeS = currentLog.getTypeS();
-                String type = currentLog.getType();
-                Double amount = currentLog.getAmount();
+
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(tc);
                 builder.setIcon(null);//设置图标, 这里设为空值
@@ -165,6 +185,12 @@ public class DetailNewActivity extends AppCompatActivity {
 
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
+
+                        notelog currentLog = log_list.get(position);
+                        String date = currentLog.getTime();
+                        String typeS = currentLog.getTypeS();
+                        String type = currentLog.getType();
+                        Double amount = currentLog.getAmount();
 
                         NDB.deleteData(date, typeS, type, amount);
                         log_list.clear();
@@ -205,6 +231,10 @@ public class DetailNewActivity extends AppCompatActivity {
                     double amount = Double.parseDouble(temp);
 
                     String log_type = createLogD.tSpinner.getSelectedItem().toString().trim();
+                    if(language.equals("zh-CN")){
+                        log_type = tl.getTransC(log_type);
+                    }
+
                     String log_date = createLogD.log_date.getText().toString().trim();
                     double log_day = Double.parseDouble(log_date.substring(0,2));//截取Date前两位
                     double log_month = Double.parseDouble(log_date.substring(2,4));
@@ -230,9 +260,15 @@ public class DetailNewActivity extends AppCompatActivity {
 
                     if (createLogD.rg_log.getCheckedRadioButtonId() == R.id.radio_income){
                         log_typeS = getString(R.string.income);
+                        if(language.equals("zh-CN")){
+                            log_typeS = tl.getTransC(log_typeS);
+                        }
                     }
                     else if (createLogD.rg_log.getCheckedRadioButtonId() == R.id.radio_spend){
                         log_typeS = getString(R.string.spend);
+                        if(language.equals("zh-CN")){
+                            log_typeS = tl.getTransC(log_typeS);
+                        }
                     }
 
                     if(log_typeS.length() == 0){
@@ -305,8 +341,16 @@ public class DetailNewActivity extends AppCompatActivity {
             String day = res.getString(1).substring(0,2);//截取Date前两位，和spinner选中的结果比较，下同
             String month = res.getString(1).substring(2,4);
             String year = res.getString(1).substring(4,8);
+
             String types = res.getString(2);//in out
             String type = res.getString(3);
+
+
+            if(language.equals("zh-CN")){
+                types = tl.getTransE(types);
+                type = tl.getTransE(type);
+            }
+
             //if比较spinner的结果和内容
             if((sel_year.equals(year)||sel_year.equals(getString(R.string.all)))&&(sel_month.equals(month)||sel_month.equals(getString(R.string.all)))&&(sel_day.equals(day)||sel_day.equals(getString(R.string.all)))) {
                 if(sel_type.equals(type)||sel_type.equals(getString(R.string.all))){

@@ -10,12 +10,20 @@ import android.widget.TextView;
 
 import com.example.attemptbookkeeping.MainPage.notebook;
 import com.example.attemptbookkeeping.R;
+import com.example.attemptbookkeeping.tools.TranslateTool;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class LogListAdapter extends ArrayAdapter<notelog> {
-    public LogListAdapter(Activity context, ArrayList<notelog> tortoises){
+
+    TranslateTool tl;
+    String language;
+
+    public LogListAdapter(Activity context, ArrayList<notelog> tortoises, String lan){
         super(context, 0, tortoises);
+        tl = new TranslateTool();
+        language = lan;
     }
 
     @Override
@@ -39,10 +47,18 @@ public class LogListAdapter extends ArrayAdapter<notelog> {
         log_amount.setText(String.valueOf(currentName.getAmount()));
 
         TextView log_typeS = listItemView.findViewById(R.id.typeS);
-        log_typeS.setText(currentName.getTypeS());
-
         TextView log_type = listItemView.findViewById(R.id.type);
-        log_type.setText(currentName.getType());
+
+        if(language.equals("zh-CN")){
+            log_typeS.setText(tl.getTransE(currentName.getTypeS()));
+            log_type.setText(tl.getTransE(currentName.getType()));
+        }
+        else{
+            log_typeS.setText(currentName.getTypeS());
+            log_type.setText(currentName.getType());
+        }
+
+
 
 
         // img暂时默认 可后续继续更改
