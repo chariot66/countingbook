@@ -236,13 +236,14 @@ public class DetailNewActivity extends AppCompatActivity {
                     }
 
                     String log_date = createLogD.log_date.getText().toString().trim();
-                    double log_day = Double.parseDouble(log_date.substring(0,2));//截取Date前两位
-                    double log_month = Double.parseDouble(log_date.substring(2,4));
-                    double log_year = Double.parseDouble(log_date.substring(4,8));
                     if(log_date.length() != 8){
                         Toast.makeText(tc, R.string.alert_date_format, Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    double log_day = Double.parseDouble(log_date.substring(0,2));//截取Date前两位
+                    double log_month = Double.parseDouble(log_date.substring(2,4));
+                    double log_year = Double.parseDouble(log_date.substring(4,8));
+
                     if(log_day>31||log_month>12||log_year>2023||log_year<2021){
                         Toast.makeText(tc, R.string.alert_date_invalid, Toast.LENGTH_SHORT).show();
                         return;
