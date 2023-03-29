@@ -153,8 +153,6 @@ public class MainActivity extends AppCompatActivity {
                     logDB.renameTable(old_table_name, new_table_name);
 
 
-
-
                     // 更新notebook的显示
                     notebooks_list.clear();
                     notebooks_list.addAll(viewAllRecords());
