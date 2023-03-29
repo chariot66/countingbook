@@ -5,9 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,12 +40,17 @@ public class MainActivity extends AppCompatActivity {
     Context mc;
     static ArrayList<String> tasks = new ArrayList<>();
     static NoteListAdapter noteAdapter;
+
+    Button ModifyCancel;
+    Button ModifyDelete;
+    Button Modifysave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mc = this;
 
+
+        mc = this;
         // 数据库
         logDB = new NotebookDBhelper(mc);
         DBtable = new DBTableHelper(this);
@@ -67,11 +79,62 @@ public class MainActivity extends AppCompatActivity {
                     position, long id) {
                 com.example.attemptbookkeeping.MainPage.notebook currentNote = notebooks_list.get(position);
                 String click_name = currentNote.getName();
+                show(click_name);
+                ModifyCancel = testView.findViewById(R.id.btn_cancel_m1);
+                ModifyCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        hide();
+                    }
+                });
+                ModifyDelete = testView.findViewById(R.id.btn_delete);
+                ModifyDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DBtable.deleteData(click_name);
+                        // 还需要删除对应账本表的逻辑
+
+                        logDB.deleteTable(click_name);
+
+                        notebooks_list.clear();
+                        notebooks_list.addAll(viewAllRecords());
+//                        setNewData(viewAllRecords());
+                        noteAdapter.notifyDataSetChanged();
+                        hide();
+                    }
+                });
+                Modifysave = testView.findViewById(R.id.btn_save_m1);
+                Modifysave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText modifyname = testView.findViewById(R.id.new_table_name_m1);
+                        EditText modifyinfo = testView.findViewById(R.id.new_table_info_m1);
+                        String new_table_name = modifyname.getText().toString();
+                        String new_table_info = modifyname.getText().toString();
+                        if(modifyname.length() == 0){
+                            Toast.makeText(mc, R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if(isStartWithNumber(new_table_name)){
+                            Toast.makeText(mc, R.string.alert_name_number, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        DBtable.updateData(click_name, new_table_name, new_table_info);
+                        //还需要修改对应账本表名的逻辑
+                        logDB.renameTable(click_name, new_table_name);
+                        // 更新notebook的显示
+                        notebooks_list.clear();
+                        notebooks_list.addAll(viewAllRecords());
+//                        setNewData(viewAllRecords());
+                        noteAdapter.notifyDataSetChanged();
+                        hide();
+                    }
+                });
+                /*
                 AlertDialog.Builder builder = new AlertDialog.Builder(mc);
                 builder.setIcon(null);//设置图标, 这里设为空值
                 builder.setTitle(R.string.title_delete);
                 builder.setMessage(getString(R.string.check_delete) + click_name );
-
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface arg0, int arg1){
 
@@ -96,11 +159,41 @@ public class MainActivity extends AppCompatActivity {
                 });
                 AlertDialog b = builder.create();
                 b.show();//显示对话框
+
+                 */
                 return true;
+
             }
 
         });
     }
+
+    private WindowManager wm;
+    private LinearLayout testView;
+
+    public void show(String click_name)
+    {
+        wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT);
+        lp.gravity = Gravity.CENTER;
+        lp.y = 0;
+        lp.x = 0;
+        testView = (LinearLayout) View.inflate(MainActivity.this,R.layout.layout_demo,null);
+        wm.addView(testView,lp);
+
+
+    }
+
+    public void hide()
+    {
+        wm.removeView(testView);
+    }
+
+
+
 
     /**
      * 读数据库 获取所有账本名&info,主要用于的更新显示recycleview

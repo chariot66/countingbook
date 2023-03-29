@@ -118,5 +118,6 @@
     <string name="new_name">新名称</string>
     <string name="getDiscript">获取描述</string>
     <string name="search">查找</string>
+    <string name="Delete">删除</string>
 
 </resources>
