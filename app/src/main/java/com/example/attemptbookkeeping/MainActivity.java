@@ -1,5 +1,6 @@
 package com.example.attemptbookkeeping;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,18 +38,20 @@ public class MainActivity extends AppCompatActivity {
     NotebookDBhelper logDB;
     ArrayList<com.example.attemptbookkeeping.MainPage.notebook> notebooks_list;
     Context mc;
+    Activity at;
     static ArrayList<String> tasks = new ArrayList<>();
     static NoteListAdapter noteAdapter;
 
     Button ModifyCancel;
     Button ModifyDelete;
     Button Modifysave;
+    String old_name_notebook;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        at = this;
         mc = this;
         // 数据库
         logDB = new NotebookDBhelper(mc);
@@ -77,122 +79,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int
                     position, long id) {
+                //获取点击的账本信息并显示在弹窗上
                 com.example.attemptbookkeeping.MainPage.notebook currentNote = notebooks_list.get(position);
-                String click_name = currentNote.getName();
-                show(click_name);
-                ModifyCancel = testView.findViewById(R.id.btn_cancel_m1);
-                ModifyCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        hide();
-                    }
-                });
-                ModifyDelete = testView.findViewById(R.id.btn_delete);
-                ModifyDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        DBtable.deleteData(click_name);
-                        // 还需要删除对应账本表的逻辑
-
-                        logDB.deleteTable(click_name);
-
-                        notebooks_list.clear();
-                        notebooks_list.addAll(viewAllRecords());
-//                        setNewData(viewAllRecords());
-                        noteAdapter.notifyDataSetChanged();
-                        hide();
-                    }
-                });
-                Modifysave = testView.findViewById(R.id.btn_save_m1);
-                Modifysave.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        EditText modifyname = testView.findViewById(R.id.new_table_name_m1);
-                        EditText modifyinfo = testView.findViewById(R.id.new_table_info_m1);
-                        String new_table_name = modifyname.getText().toString();
-                        String new_table_info = modifyname.getText().toString();
-                        if(modifyname.length() == 0){
-                            Toast.makeText(mc, R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if(isStartWithNumber(new_table_name)){
-                            Toast.makeText(mc, R.string.alert_name_number, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        DBtable.updateData(click_name, new_table_name, new_table_info);
-                        //还需要修改对应账本表名的逻辑
-                        logDB.renameTable(click_name, new_table_name);
-                        // 更新notebook的显示
-                        notebooks_list.clear();
-                        notebooks_list.addAll(viewAllRecords());
-//                        setNewData(viewAllRecords());
-                        noteAdapter.notifyDataSetChanged();
-                        hide();
-                    }
-                });
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(mc);
-                builder.setIcon(null);//设置图标, 这里设为空值
-                builder.setTitle(R.string.title_delete);
-                builder.setMessage(getString(R.string.check_delete) + click_name );
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface arg0, int arg1){
-
-                        DBtable.deleteData(click_name);
-                        // 还需要删除对应账本表的逻辑
-
-                        logDB.deleteTable(click_name);
-
-                        notebooks_list.clear();
-                        notebooks_list.addAll(viewAllRecords());
-//                        setNewData(viewAllRecords());
-                        noteAdapter.notifyDataSetChanged();
-
-
-
-                    }
-                });
-
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface arg0,int arg1){
-                    }
-                });
-                AlertDialog b = builder.create();
-                b.show();//显示对话框
-
-                 */
+                old_name_notebook = currentNote.getName();
+                modifyTableD = new ModifyTableDialog(at, androidx.appcompat.R.style.Base_Theme_AppCompat_Dialog,onModifyClickListener);
+                modifyTableD.show();
+                modifyTableD.old_table_name.setText(old_name_notebook);
+                String old_table_name_2 = modifyTableD.old_table_name.getText().toString().trim();
+                if(old_table_name_2.length() == 0){
+                    return true;
+                }
+                String info = DBtable.getInfo(old_table_name_2);
+                modifyTableD.table_info.setText(info);
                 return true;
 
             }
 
         });
     }
-
-    private WindowManager wm;
-    private LinearLayout testView;
-
-    public void show(String click_name)
-    {
-        wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.CENTER;
-        lp.y = 0;
-        lp.x = 0;
-        testView = (LinearLayout) View.inflate(MainActivity.this,R.layout.layout_demo,null);
-        wm.addView(testView,lp);
-
-
-    }
-
-    public void hide()
-    {
-        wm.removeView(testView);
-    }
-
-
 
 
     /**
@@ -228,9 +132,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
+                //整合了修改和删除123
                 case R.id.btn_save_m:
-                    String old_table_name = modifyTableD.old_table_name.getText().toString().trim();
-                    String new_table_name = modifyTableD.new_table_name.getText().toString().trim();
+                    String old_table_name = old_name_notebook;
+                    String new_table_name = modifyTableD.old_table_name.getText().toString().trim();
                     if(old_table_name.length() == 0 || new_table_name.length() == 0){
                         Toast.makeText(mc, R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
                         return;
@@ -243,8 +148,9 @@ public class MainActivity extends AppCompatActivity {
                     DBtable.updateData(old_table_name, new_table_name, table_info);
 
                     //还需要修改对应账本表名的逻辑
-                    logDB.renameTable(old_table_name, new_table_name);
-
+                    if(!old_table_name.equals(new_table_name)){
+                        logDB.renameTable(old_table_name, new_table_name);
+                    }
 
                     // 更新notebook的显示
                     notebooks_list.clear();
@@ -254,16 +160,18 @@ public class MainActivity extends AppCompatActivity {
 
                     modifyTableD.dismiss();
                     break;
-                case R.id.btn_get_info_m:
-                    // 获取原来的描述
-                    String old_table_name_2 = modifyTableD.old_table_name.getText().toString().trim();
-                    if(old_table_name_2.length() == 0){
-                        return;
-                    }
-                    String info = DBtable.getInfo(old_table_name_2);
-                    modifyTableD.table_info.setText(info);
-                    break;
+                case R.id.btn_modify_del:
+                    DBtable.deleteData(old_name_notebook);
+                    // 还需要删除对应账本表的逻辑
 
+                    logDB.deleteTable(old_name_notebook);
+
+                    notebooks_list.clear();
+                    notebooks_list.addAll(viewAllRecords());
+//                        setNewData(viewAllRecords());
+                    noteAdapter.notifyDataSetChanged();
+                    modifyTableD.dismiss();
+                    break;
                 case R.id.btn_cancel_m:
                     modifyTableD.dismiss();
                     break;
@@ -318,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
 
                     createTableD.dismiss();
                     break;
+                case R.id.btn_modify_del:
+
                 case R.id.btn_cancel:
                     createTableD.dismiss();
                     break;
