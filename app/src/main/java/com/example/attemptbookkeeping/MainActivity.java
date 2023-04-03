@@ -110,9 +110,10 @@ public class MainActivity extends AppCompatActivity {
                         EditText modifyname = testView.findViewById(R.id.new_table_name_m1);
                         EditText modifyinfo = testView.findViewById(R.id.new_table_info_m1);
                         String new_table_name = modifyname.getText().toString();
-                        String new_table_info = modifyname.getText().toString();
-                        if(modifyname.length() == 0){
-                            Toast.makeText(mc, R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
+                        String new_table_info = modifyinfo.getText().toString();
+                        if((modifyname.length() == 0)||(modifyinfo.length() == 0)){
+                            //Toast.makeText(mc, R.string.alert_empty_name, Toast.LENGTH_SHORT).show();
+                            hide();
                             return;
                         }
                         if(isStartWithNumber(new_table_name)){
@@ -191,6 +192,14 @@ public class MainActivity extends AppCompatActivity {
     {
         wm.removeView(testView);
     }
+
+
+    protected void onPause()
+    {
+        super.onPause();
+        hide();
+    }
+
 
 
 
