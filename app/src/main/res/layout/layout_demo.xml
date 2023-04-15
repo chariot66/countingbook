@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_width="400dp"
+    android:layout_height="600dp"
+    android:orientation="vertical"
+    android:background="#ffffff00">
 
     <EditText
-        android:id="@+id/old_table_name_m"
+        android:id="@+id/new_table_name_m1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ori_name"
+        android:hint="@string/new_name"
         android:minHeight="45dp"
         android:textColor="@color/black"
-        android:textColorHint="@color/teal_200"
+        android:textColorHint="@color/black"
         android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/table_info_m"
+        android:id="@+id/new_table_info_m1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -25,33 +26,32 @@
         android:minHeight="145dp"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textColorHint="@color/teal_200"
+        android:textColorHint="@color/black"
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/btn_modify_del"
+        android:id="@+id/btn_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
-        android:onClick="showEditDialog"
         android:text="@string/Delete" />
 
     <Button
-        android:id="@+id/btn_save_m"
+        android:id="@+id/btn_save_m1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
-        android:onClick="showEditDialog"
         android:text="@string/save" />
 
     <Button
-        android:id="@+id/btn_cancel_m"
+        android:id="@+id/btn_cancel_m1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
+        android:onClick="hide"
         android:text="@string/cancel" />
 
 </LinearLayout >

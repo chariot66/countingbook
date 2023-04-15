@@ -21,7 +21,7 @@ public class ModifyTableDialog extends Dialog {
 
     private Button btn_save, btn_cancel, btn_get_info;
 
-    public EditText old_table_name, new_table_name;
+    public EditText old_table_name;
 
     public EditText table_info;
 
@@ -45,7 +45,6 @@ public class ModifyTableDialog extends Dialog {
         this.setContentView(R.layout.modify_table);
 
         old_table_name = (EditText) findViewById(R.id.old_table_name_m);
-        new_table_name = (EditText) findViewById(R.id.new_table_name_m);
         table_info = (EditText) findViewById(R.id.table_info_m);
 
         /*
@@ -64,7 +63,7 @@ public class ModifyTableDialog extends Dialog {
         // 根据id在布局中找到控件对象
         btn_save = (Button) findViewById(R.id.btn_save_m);
         btn_cancel = (Button) findViewById(R.id.btn_cancel_m);
-        btn_get_info = (Button) findViewById(R.id.btn_get_info_m);
+        btn_get_info = (Button) findViewById(R.id.btn_modify_del);
 
         // 为按钮绑定点击事件监听器
         btn_save.setOnClickListener(mClickListener);

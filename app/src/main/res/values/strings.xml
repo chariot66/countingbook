@@ -118,5 +118,6 @@
     <string name="new_name">New Name</string>
     <string name="getDiscript">Get Discription</string>
     <string name="search">Search</string>
+    <string name="Delete">Delete</string>
 
 </resources>

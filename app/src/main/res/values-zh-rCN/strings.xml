@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">我的账本</string>
+
+    <string-array name="log_type">
+        <item>饮食</item>
+        <item>交通出行</item>
+        <item>健康医疗</item>
+        <item>社交生活</item>
+        <item>娱乐</item>
+        <item>生活</item>
+    </string-array>
+    <string-array name="type_array">
+        <item>全部</item>
+        <item>饮食</item>
+        <item>交通出行</item>
+        <item>健康医疗</item>
+        <item>社交生活</item>
+        <item>娱乐</item>
+        <item>生活</item>
+    </string-array>
+    <string-array name="inoutcome">
+        <item>全部</item>
+        <item>收入</item>
+        <item>支出</item>
+    </string-array>
+    <string-array name="days_array">
+        <item>全部</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+    </string-array>
+    <string-array name="months_array">
+        <item>全部</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+    <string-array name="years_array">
+        <item>全部</item>
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+    </string-array>
+
+    <string name="title_activity_detail">账本明细</string>
+    <string name="title_delete">删除</string>
+    <string name="check_delete">你确定要删除:</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="alert_empty_name">名不可为空</string>
+    <string name="alert_name_number">名不可以数字开头</string>
+    <string name="title_error">错误</string>
+    <string name="alert_name_same">已存在</string>
+    <string name="alert_amount_empty">金额不可为空</string>
+    <string name="alert_date_format">日期需以DDMMYYYY为格式</string>
+    <string name="alert_date_invalid">日期无效</string>
+    <string name="alert_no_record">无记录</string>
+    <string name="alert_select_type">请选择 收入/支出</string>
+    <string name="income">收入</string>
+    <string name="spend">支出</string>
+    <string name="title_income">收入</string>
+    <string name="title_spend">支出</string>
+    <string name="total">总计:</string>
+    <string name="food">饮食</string>
+    <string name="Transport">交通出行</string>
+    <string name="Health">医疗健康</string>
+    <string name="SocialLife">社交生活</string>
+    <string name="Entertainment">娱乐</string>
+    <string name="Living">生活</string>
+    <string name="all">全部</string>
+    <string name="new_notebook">新账本</string>
+    <string name="modify">修改</string>
+    <string name="new_record">新纪录</string>
+    <string name="statistics">统计图</string>
+    <string name="amount">金额</string>
+    <string name="date_format">DDMMYYYY</string>
+    <string name="save">保存</string>
+    <string name="name">名称</string>
+    <string name="discript">描述</string>
+    <string name="ori_name">原名称</string>
+    <string name="new_name">新名称</string>
+    <string name="getDiscript">获取描述</string>
+    <string name="search">查找</string>
+    <string name="Delete">删除</string>
+
+</resources>

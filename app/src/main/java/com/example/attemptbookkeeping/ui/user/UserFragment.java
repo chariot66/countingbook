@@ -148,7 +148,7 @@ public class UserFragment extends Fragment {
                 });
         //定义五个Spinner
 
-        logAdapter = new LogListAdapter(getActivity(), this.log_list);
+        //logAdapter = new LogListAdapter(getActivity(), this.log_list, "test");
         ListView listView = view.findViewById(R.id.userInputList);
         listView.setAdapter(logAdapter);
 
