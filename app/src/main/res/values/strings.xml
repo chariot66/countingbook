@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AttemptBookkeeping</string>
+    <string name="app_name">My Account Book</string>
 
     <string-array name="log_type">
         <item>Food</item>
@@ -92,7 +92,7 @@
     <string name="alert_date_format">Please re-input the date in DDMMYYYY</string>
     <string name="alert_date_invalid">Invaliad date</string>
     <string name="alert_no_record">NO RECORD</string>
-    <string name="alert_select_type">Please select in/outcome</string>
+    <string name="alert_select_type">Please select in/outcome and complete the search action</string>
     <string name="income">income</string>
     <string name="spend">spend</string>
     <string name="title_income">INCOME</string>

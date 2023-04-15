@@ -21,12 +21,12 @@ public class NoteListAdapter extends ArrayAdapter<notebook> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItemView = convertView;
 
-        //listItemView可能會是空的，例如App剛啟動時，沒有預先儲存的view可使用
+        //listItemView init
         if(listItemView == null){
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.notebook_item_layout, parent, false);
         }
 
-        //找到data，並在View上設定正確的data
+        // get data at position
         notebook currentName = getItem(position);
 
         TextView note_name = listItemView.findViewById(R.id.noteName);
@@ -34,8 +34,6 @@ public class NoteListAdapter extends ArrayAdapter<notebook> {
 
         TextView note_info = listItemView.findViewById(R.id.noteDescription);
         note_info.setText(currentName.getDescription());
-
-        // img暂时默认 可后续继续更改
 
         return listItemView;
     }

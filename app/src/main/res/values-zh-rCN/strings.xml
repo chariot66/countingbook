@@ -92,7 +92,7 @@
     <string name="alert_date_format">日期需以DDMMYYYY为格式</string>
     <string name="alert_date_invalid">日期无效</string>
     <string name="alert_no_record">无记录</string>
-    <string name="alert_select_type">请选择 收入/支出</string>
+    <string name="alert_select_type">请选择 收入/支出 并进行查找，之后使用统计图</string>
     <string name="income">收入</string>
     <string name="spend">支出</string>
     <string name="title_income">收入</string>

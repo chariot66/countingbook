@@ -6,6 +6,8 @@ public class TranslateTool {
 
     HashMap E2C, C2E;
 
+    // because of the db uses eng
+    // handle problems when using CN language device
     public TranslateTool(){
         E2C = getHMEng2Ch();
         C2E = getHMCh2Eng();

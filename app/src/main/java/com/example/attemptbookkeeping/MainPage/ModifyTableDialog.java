@@ -14,9 +14,6 @@ import com.example.attemptbookkeeping.R;
 
 public class ModifyTableDialog extends Dialog {
 
-    /**
-     * 上下文对象 *
-     */
     Activity context;
 
     private Button btn_save, btn_cancel, btn_get_info;
@@ -41,31 +38,26 @@ public class ModifyTableDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 指定布局
+        // layout set
         this.setContentView(R.layout.modify_table);
 
         old_table_name = (EditText) findViewById(R.id.old_table_name_m);
         table_info = (EditText) findViewById(R.id.table_info_m);
-
-        /*
-         * 获取圣诞框的窗口对象及参数对象以修改对话框的布局设置, 可以直接调用getWindow(),表示获得这个Activity的Window
-         * 对象,这样这可以以同样的方式改变这个Activity的属性.
-         */
         Window dialogWindow = this.getWindow();
 
         WindowManager m = context.getWindowManager();
-        Display d = m.getDefaultDisplay(); // 获取屏幕宽、高用
-        WindowManager.LayoutParams p = dialogWindow.getAttributes(); // 获取对话框当前的参数值
-        // p.height = (int) (d.getHeight() * 0.6); // 高度设置为屏幕的0.6
-        p.width = (int) (d.getWidth() * 0.8); // 宽度设置为屏幕的0.8
+        Display d = m.getDefaultDisplay(); // screen config, h & w
+        WindowManager.LayoutParams p = dialogWindow.getAttributes(); // get current attribute
+        // p.height = (int) (d.getHeight() * 0.6);
+        p.width = (int) (d.getWidth() * 0.8); // set the width of the windows to total's 0.8
         dialogWindow.setAttributes(p);
 
-        // 根据id在布局中找到控件对象
+        // get component by id
         btn_save = (Button) findViewById(R.id.btn_save_m);
         btn_cancel = (Button) findViewById(R.id.btn_cancel_m);
         btn_get_info = (Button) findViewById(R.id.btn_modify_del);
 
-        // 为按钮绑定点击事件监听器
+        // add event
         btn_save.setOnClickListener(mClickListener);
         btn_cancel.setOnClickListener(mClickListener);
         btn_get_info.setOnClickListener(mClickListener);

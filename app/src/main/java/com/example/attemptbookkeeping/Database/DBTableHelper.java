@@ -34,7 +34,7 @@ public class DBTableHelper  extends SQLiteOpenHelper {
     public boolean insertData(String name, String info) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // 判断是否有重名
+        // check same name error
         String selection = COL_1 + " = ?";
         String[] selectionArgs = { name };
         String sortOrder = COL_1 + " DESC";
@@ -52,7 +52,7 @@ public class DBTableHelper  extends SQLiteOpenHelper {
             return false;
         }
         cursor.close();
-        // 开始插入
+        // insert
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,name);
         contentValues.put(COL_2,info);
@@ -91,13 +91,13 @@ public class DBTableHelper  extends SQLiteOpenHelper {
         cursor.close();
         return info;
     }
-    // Method to show all the records
+    // show all the records
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
         return res;
     }
-    // Method to update a record
+    // update a record
     public boolean updateData(String old_name, String new_name, String info)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -107,7 +107,7 @@ public class DBTableHelper  extends SQLiteOpenHelper {
         db.update(TABLE_NAME, contentValues, "NAME = ?", new String[] {old_name});
         return true;
     }
-    // Method to delete a record
+    // delete a record
     public Integer deleteData (String Name) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME, "NAME = ?", new String[] {Name});

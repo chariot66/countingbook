@@ -31,27 +31,17 @@ import java.util.Locale;
 
 public class DetailNewActivity extends AppCompatActivity {
     LogListAdapter logAdapter;
-
     ArrayList<notelog> log_list;
-
     String[] log_type_list;
-
     CreateLogDialog createLogD;
-
     Context tc;
-
     NotebookDBhelper NDB;
-
     String notebook;
-
-    String[] days,months,years,type,inoutcome;//Spinner数据
-    String sel_day,sel_month,sel_year,sel_type,sel_inoutcome;//用来存储Spinner结果
-
+    String[] days,months,years,type,inoutcome;//Spinner
+    String sel_day,sel_month,sel_year,sel_type,sel_inoutcome;//save Spinner result
     float food=0,Transport=0,Health=0,SocialLife=0,Entertainment=0,Living=0,sum=0,inout=0;
-
     TranslateTool tl;
     HashMap HME2C, HMC2E;
-
     String language;
 
     @Override
@@ -79,7 +69,7 @@ public class DetailNewActivity extends AppCompatActivity {
 
         // 获取语言
         Locale locale = getResources().getConfiguration().locale;
-//            //找到的另一个版本 备用
+//            //another version to get the device language, saved here in case accident happened
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //                locale = getResources().getConfiguration().getLocales().get(0);
 //            } else {
@@ -87,9 +77,7 @@ public class DetailNewActivity extends AppCompatActivity {
 //            }
         language = locale.getLanguage()+"-"+locale.getCountry();;
 
-        // Inflate the layout for this fragment
-
-        //定义五个Spinner
+        //5 spinner for selecting
         days = getResources().getStringArray(R.array.days_array);//从string获取列表内容
         Spinner daySpinner = (Spinner)findViewById(R.id.spinner1);//定义spinner
         ArrayAdapter<String> dayadapter = new ArrayAdapter<String>(this, R.layout.dropdown_item, days);//设置adapter
@@ -166,12 +154,15 @@ public class DetailNewActivity extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> arg0) {
                     }
                 });
-        //定义五个Spinner
+        //5 spinner for selecting
 
+
+        // the listview create logic, adapter
         logAdapter = new LogListAdapter(this, this.log_list, language);
         ListView listView = findViewById(R.id.userInputList);
         listView.setAdapter(logAdapter);
 
+        // long click event, for list view del
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int
@@ -179,7 +170,7 @@ public class DetailNewActivity extends AppCompatActivity {
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(tc);
-                builder.setIcon(null);//设置图标, 这里设为空值
+                builder.setIcon(null);
                 builder.setTitle(R.string.title_delete);
                 builder.setMessage(R.string.check_delete);
 
@@ -195,7 +186,6 @@ public class DetailNewActivity extends AppCompatActivity {
                         NDB.deleteData(date, typeS, type, amount);
                         log_list.clear();
                         log_list.addAll(viewAllLogs());
-//                        setNewData(viewAllRecords());
                         logAdapter.notifyDataSetChanged();
 
                     }
@@ -206,7 +196,7 @@ public class DetailNewActivity extends AppCompatActivity {
                     }
                 });
                 AlertDialog b = builder.create();
-                b.show();//显示对话框
+                b.show();
                 return true;
             }
 
@@ -328,7 +318,7 @@ public class DetailNewActivity extends AppCompatActivity {
         return models;
     }
 
-    //按日期、类别、收支查找
+    // search by specific confic (date, class, type)
     public ArrayList<notelog> Search(View view) {
         food=0;Transport=0;Health=0;SocialLife=0;Entertainment=0;Living=0;sum=0;inout=0;
         Cursor res = NDB.getAllData();
@@ -352,7 +342,7 @@ public class DetailNewActivity extends AppCompatActivity {
                 type = tl.getTransE(type);
             }
 
-            //if比较spinner的结果和内容
+            //compare the result and content
             if((sel_year.equals(year)||sel_year.equals(getString(R.string.all)))&&(sel_month.equals(month)||sel_month.equals(getString(R.string.all)))&&(sel_day.equals(day)||sel_day.equals(getString(R.string.all)))) {
                 if(sel_type.equals(type)||sel_type.equals(getString(R.string.all))){
                     if(sel_inoutcome.equals(types)||sel_inoutcome.equals(getString(R.string.all))){
@@ -406,11 +396,9 @@ public class DetailNewActivity extends AppCompatActivity {
         }
         log_list.clear();
         log_list.addAll(models);
-//                        setNewData(viewAllRecords());
         logAdapter.notifyDataSetChanged();//显示数据
         return models;
     }
-    //按日期、类别、收支查找
 
     public void Pie(View view){
         if(inout==0){

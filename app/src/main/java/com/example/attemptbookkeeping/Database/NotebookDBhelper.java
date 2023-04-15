@@ -69,7 +69,7 @@ public class NotebookDBhelper extends SQLiteOpenHelper {
         return true;
     }
 
-    // 更新还没写 下面这个表列没修改，对不上
+    // the previous version
 //    // Method to update a record
 //    public boolean updateData(String id, String DATE, String CLASS, String MONEY)
 //    {

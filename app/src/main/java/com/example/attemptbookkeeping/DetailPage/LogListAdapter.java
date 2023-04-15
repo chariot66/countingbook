@@ -30,13 +30,12 @@ public class LogListAdapter extends ArrayAdapter<notelog> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItemView = convertView;
 
-        //listItemView可能會是空的，例如App剛啟動時，沒有預先儲存的view可使用
+        //listItemView layout init
         if(listItemView == null){
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.log_layout, parent, false);
         }
 //        View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.log_layout, parent, false);
 
-        //找到data，並在View上設定正確的data
         notelog currentName = getItem(position);
 
         TextView log_date = listItemView.findViewById(R.id.datetime);
@@ -57,11 +56,6 @@ public class LogListAdapter extends ArrayAdapter<notelog> {
             log_typeS.setText(currentName.getTypeS());
             log_type.setText(currentName.getType());
         }
-
-
-
-
-        // img暂时默认 可后续继续更改
 
         return listItemView;
     }
